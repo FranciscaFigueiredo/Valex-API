@@ -41,7 +41,7 @@ async function blockCard(req: Request, res: Response) {
 
     const { id } = req.params;
 
-    await cardService.blockCard(Number(id), password);
+    await cardService.lockUnlockCard(Number(id), password, 'lock');
 
     return res.sendStatus(200);
 }
@@ -53,7 +53,7 @@ async function unlockCard(req: Request, res: Response) {
 
     const { id } = req.params;
 
-    await cardService.unlockCard(Number(id), password);
+    await cardService.lockUnlockCard(Number(id), password, 'unlock');
 
     return res.sendStatus(200);
 }

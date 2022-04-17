@@ -1,4 +1,4 @@
-import { CardValuesUpdate } from "../interfaces/cardInterface";
+import { CardValuesUpdate } from "../interfaces/Card";
 
 export function mapObjectToUpdateQuery({ object, offset = 1 }: CardValuesUpdate) {
   const objectColumns = Object.keys(object)

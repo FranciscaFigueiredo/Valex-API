@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
+import bcrypt from 'bcrypt';
 import ForbiddenError from "../errors/ForbiddenError";
 import NotFoundError from "../errors/NotFoundError";
-import { Card } from "../interfaces/cardInterface";
+import UnauthorizedError from "../errors/UnauthorizedError";
+import { Card } from "../interfaces/Card";
 import * as cardRepository from "../repositories/cardRepository";
 import * as paymentRepository from "../repositories/paymentRepository";
 import * as rechargeRepository from "../repositories/rechargeRepository";
@@ -34,8 +36,18 @@ async function findCardBalance(id: number) {
     return balance;
 }
 
+async function verifyCardPassword(password: string, card: Card) {    
+    const isAuthorized = bcrypt.compareSync(password, card.password);
+console.log(isAuthorized);
+
+    if (!isAuthorized) {
+        throw new UnauthorizedError('Invalid password, please try again')
+    }
+}
+
 export {
     verifyExpirationDate,
     registeredCardCheck,
     findCardBalance,
+    verifyCardPassword,
 };

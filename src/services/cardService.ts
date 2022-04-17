@@ -1,16 +1,17 @@
 import NotFoundError from "../errors/NotFoundError";
-import * as cardInterface from "../interfaces/cardInterface";
+import * as cardInterface from "../interfaces/Card";
 import * as cardRepository from "../repositories/cardRepository";
 import * as employeeRepository from "../repositories/employeeRepository";
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import ConflictError from "../errors/ConflictError";
-import { EmployeeName } from "../interfaces/employeeInterface";
+import { EmployeeName } from "../interfaces/Employee";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import * as paymentRepository from "../repositories/paymentRepository";
 import * as rechargeRepository from "../repositories/rechargeRepository";
 import * as cardUtils from "../utils/cardUtils";
+import ForbiddenError from "../errors/ForbiddenError";
 
 async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface) {
 
@@ -48,7 +49,7 @@ async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface
     return card;
 }
 
-async function activateCard({ id, number, cvc, password }: cardInterface.ActivateCardData): Promise<boolean> {
+async function activateCard({ id, cvc, password }: cardInterface.ActivateCardData): Promise<boolean> {
     const card = await cardUtils.registeredCardCheck(id);
     
     if (card.password) {
@@ -60,7 +61,7 @@ async function activateCard({ id, number, cvc, password }: cardInterface.Activat
     const isAuthorized = bcrypt.compareSync(cvc, card.securityCode);
 
     if (!isAuthorized) {
-        throw new UnauthorizedError('');
+        throw new UnauthorizedError('Incorrect code!');
     }    
 
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -86,6 +87,20 @@ async function findCardDetails(id: number) {
         transactions,
         recharges,
     };
+}
+
+async function blockCard(id: number, password: string) {
+    const card = await cardUtils.registeredCardCheck(id);    
+
+    await cardUtils.verifyCardPassword(password, card);
+    
+    if (card.isBlocked) {
+        throw new ForbiddenError('Card already blocked!');
+    }
+
+    await cardUtils.verifyExpirationDate(card.expirationDate);
+
+    await cardRepository.update(id, {isBlocked: true});
 }
 
 async function findCardByNumber(number: string): Promise<boolean> {
@@ -156,4 +171,5 @@ export {
     postNewCard,
     activateCard,
     findCardDetails,
+    blockCard,
 };

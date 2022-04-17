@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ActivateCardData, InfoCardInterface } from "../interfaces/cardInterface";
+import { ActivateCardData, InfoCardInterface } from "../interfaces/Card";
 import * as cardService from "../services/cardService";
 
 async function postCard(req: Request, res: Response) {
@@ -15,14 +15,13 @@ async function postCard(req: Request, res: Response) {
 
 async function unlockCard(req: Request, res: Response) {
     const {
-        number,
         cvc,
         password,
     }: ActivateCardData = req.body;
 
     const { id } = req.params;
 
-    await cardService.activateCard({ id: Number(id), number, cvc, password });
+    await cardService.activateCard({ id: Number(id), cvc, password });
 
     return res.sendStatus(200);
 }
@@ -35,8 +34,21 @@ async function getCardData(req: Request, res: Response) {
     return res.send(cardDetails);
 }
 
+async function blockCard(req: Request, res: Response) {
+    const {
+        password,
+    } = req.body;
+
+    const { id } = req.params;
+
+    await cardService.blockCard(Number(id), password);
+
+    return res.sendStatus(200);
+}
+
 export {
     postCard,
     unlockCard,
     getCardData,
+    blockCard,
 };

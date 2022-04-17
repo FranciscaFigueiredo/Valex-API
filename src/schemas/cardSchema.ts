@@ -12,7 +12,12 @@ const activateSchema = joi.object({
     password: joi.number().min(1000).max(9999),
 });
 
+const blockSchema = joi.object({
+    password: joi.number().min(1000).max(9999),
+});
+
 export {
     typeSchema,
     activateSchema,
+    blockSchema,
 };

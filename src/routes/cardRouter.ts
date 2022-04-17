@@ -6,6 +6,7 @@ import { activateSchema, typeSchema } from "../schemas/cardSchema";
 const router = Router();
 
 router.post('/cards', validateSchemaMiddleware(typeSchema), cardController.postCard);
-router.put('/cards', validateSchemaMiddleware(activateSchema), cardController.unlockCard);
+router.put('/cards/:id', validateSchemaMiddleware(activateSchema), cardController.unlockCard);
+router.get('/cards/:id', cardController.getCardData);
 
 export default router;

@@ -33,7 +33,7 @@ export interface CardValuesUpdate {
 };
 
 export interface ActivateCardData {
-    employeeId: number,
+    id: number,
     number: string,
     cvc: string,
     password: string,

@@ -8,6 +8,9 @@ import dayjs from 'dayjs';
 import ConflictError from "../errors/ConflictError";
 import { EmployeeName } from "../interfaces/employeeInterface";
 import UnauthorizedError from "../errors/UnauthorizedError";
+import ForbiddenError from "../errors/ForbiddenError";
+import * as paymentRepository from "../repositories/paymentRepository";
+import * as rechargeRepository from "../repositories/rechargeRepository";
 
 async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface) {
 
@@ -45,12 +48,20 @@ async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface
     return card;
 }
 
-async function activateCard({ employeeId, number, cvc, password }: cardInterface.ActivateCardData): Promise<boolean> {
+async function activateCard({ id, number, cvc, password }: cardInterface.ActivateCardData): Promise<boolean> {
     const card = await cardRepository.findByCardNumber(number);
+    console.log({card});
+    
     
     if (!card) {
         throw new NotFoundError('')
     }
+    
+    if (card.password) {
+        throw new ConflictError('Card already unlocked!')
+    }
+
+    await verifyExpirationDate(card.expirationDate);
 
     const isAuthorized = bcrypt.compareSync(cvc, card.securityCode);
 
@@ -60,9 +71,21 @@ async function activateCard({ employeeId, number, cvc, password }: cardInterface
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    await cardRepository.update(employeeId, {password: hashedPassword});
+    await cardRepository.update(id, {password: hashedPassword, isBlocked: false});
 
     return true;
+}
+
+async function findCardDetails(id: number) {
+    const balance = await paymentRepository.findBalanceByCardId(id)
+    const transactions = await paymentRepository.findByCardId(id);
+    const recharges = await rechargeRepository.findByCardId(id);
+    
+    return {
+        balance,
+        transactions,
+        recharges,
+    };
 }
 
 async function findCardByNumber(number: string): Promise<boolean> {
@@ -129,7 +152,17 @@ async function verifyTypeOfEmployeeCard({ type, employeeId }: cardInterface.Info
     return expirationDate;
 }
 
+async function verifyExpirationDate(expirationDate: string) {
+    const now = dayjs().format('MM/YY');
+    const isExpired = dayjs(now) > dayjs(expirationDate);
+
+    if (isExpired) {
+        throw new ForbiddenError('Date expired!');
+    }
+}
+
 export {
     postNewCard,
     activateCard,
+    findCardDetails,
 };

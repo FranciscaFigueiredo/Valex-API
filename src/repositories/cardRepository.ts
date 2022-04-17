@@ -104,7 +104,7 @@ export async function update(id: number, cardData: cardInterface.CardUpdateData)
     `
     UPDATE cards
       SET ${cardColumns}
-    WHERE $1=id
+    WHERE $1=id;
   `,
     [id, ...cardValues]
   );

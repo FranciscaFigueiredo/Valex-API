@@ -5,6 +5,7 @@ export function mapObjectToUpdateQuery({ object, offset = 1 }: CardValuesUpdate)
     .map((key, index) => `"${key}"=$${index + offset}`)
     .join(",");
   const objectValues = Object.values(object);
-
+  console.log({ objectColumns, objectValues });
+  
   return { objectColumns, objectValues };
 }

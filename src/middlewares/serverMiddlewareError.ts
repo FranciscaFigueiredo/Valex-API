@@ -11,6 +11,10 @@ export default async function serverMiddlewareError(error: ErrorRequestHandler, 
 		return res.sendStatus(401);
 	}
 
+	if (error.name === 'ForbiddenError') {
+		return res.sendStatus(403);
+	}
+
 	if (error.name === 'NotFoundError') {
 		return res.sendStatus(404);
 	}

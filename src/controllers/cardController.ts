@@ -15,18 +15,28 @@ async function postCard(req: Request, res: Response) {
 
 async function unlockCard(req: Request, res: Response) {
     const {
-        employeeId,
         number,
         cvc,
         password,
     }: ActivateCardData = req.body;
 
-    await cardService.activateCard({ employeeId, number, cvc, password });
+    const { id } = req.params;
+
+    await cardService.activateCard({ id: Number(id), number, cvc, password });
 
     return res.sendStatus(200);
+}
+
+async function getCardData(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const cardDetails = await cardService.findCardDetails(Number(id));
+
+    return res.send(cardDetails);
 }
 
 export {
     postCard,
     unlockCard,
+    getCardData,
 };

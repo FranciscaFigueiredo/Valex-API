@@ -1,5 +1,5 @@
 class ConflictError extends Error {
-    constructor(message: string) {
+    constructor(message?: string) {
         super(message);
         this.name = 'BodyError';
     }

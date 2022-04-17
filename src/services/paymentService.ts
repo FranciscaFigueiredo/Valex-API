@@ -13,6 +13,11 @@ async function newPayment(password: string, paymentData: PaymentInsertData) {
     } = paymentData;
 
     const card = await cardUtils.registeredCardCheck(cardId);
+
+    if (card.isBlocked) {
+        throw new ForbiddenError('Blocked card');
+    }
+    
     await cardUtils.verifyExpirationDate(card.expirationDate);
 
     await cardUtils.verifyCardPassword(password, card);

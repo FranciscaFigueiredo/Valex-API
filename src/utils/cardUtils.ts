@@ -38,7 +38,6 @@ async function findCardBalance(id: number) {
 
 async function verifyCardPassword(password: string, card: Card) {    
     const isAuthorized = bcrypt.compareSync(password, card.password);
-console.log(isAuthorized);
 
     if (!isAuthorized) {
         throw new UnauthorizedError('Invalid password, please try again')

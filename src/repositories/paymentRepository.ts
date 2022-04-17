@@ -1,4 +1,4 @@
-import { connection } from "../database.js";
+import { connection } from "../database";
 
 export interface Payment {
   id: number;
@@ -9,6 +9,19 @@ export interface Payment {
 }
 export type PaymentWithBusinessName = Payment & { businessName: string };
 export type PaymentInsertData = Omit<Payment, "id" | "timestamp">;
+
+export async function findBalanceByCardId(cardId: number) {
+  const result = await connection.query(
+    `SELECT 
+      SUM(amount) AS balance
+     FROM payments
+     WHERE "cardId"=$1;
+    `,
+    [cardId]
+  );
+
+  return result.rows[0].balance;
+}
 
 export async function findByCardId(cardId: number) {
   const result = await connection.query<PaymentWithBusinessName, [number]>(

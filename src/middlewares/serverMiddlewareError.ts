@@ -1,26 +1,26 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
-import BodyError from "../errors/BodyError";
-import ConflictError from "../errors/ConflictError";
-import NotFoundError from "../errors/NotFoundError";
-import UnauthorizedError from "../errors/UnauthorizedError";
 
 export default async function serverMiddlewareError(error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) {
 	console.log(error);
-
-	if (error instanceof BodyError) {
-		return res.status(400).send(error.message);
+	
+	if (error.name === 'BodyError') {
+		return res.sendStatus(400);
 	}
 
-	if (error instanceof UnauthorizedError) {
-		return res.status(401).send(error.message);
+	if (error.name === 'UnauthorizedError') {
+		return res.sendStatus(401);
 	}
 
-	if (error instanceof NotFoundError) {
-		return res.status(404).send(error.message);
+	if (error.name === 'ForbiddenError') {
+		return res.sendStatus(403);
 	}
 
-	if (error instanceof ConflictError) {
-		return res.status(409).send(error.message);
+	if (error.name === 'NotFoundError') {
+		return res.sendStatus(404);
+	}
+
+	if (error.name === 'ConflictError') {
+		return res.sendStatus(409);
 	}
 
 	return res.sendStatus(500);

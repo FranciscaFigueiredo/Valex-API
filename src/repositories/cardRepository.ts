@@ -1,37 +1,14 @@
 import { connection } from "../database";
+import * as cardInterface from "../interfaces/cardInterface";
 import { mapObjectToUpdateQuery } from "../utils/sqlUtils";
 
-export type TransactionTypes =
-  | "groceries"
-  | "restaurant"
-  | "transport"
-  | "education"
-  | "health";
-
-export interface Card {
-  id: number;
-  employeeId: number;
-  number: string;
-  cardholderName: string;
-  securityCode: string;
-  expirationDate: string;
-  password?: string;
-  isVirtual: boolean;
-  originalCardId?: number;
-  isBlocked: boolean;
-  type: TransactionTypes;
-}
-
-export type CardInsertData = Omit<Card, "id">;
-export type CardUpdateData = Partial<Card>;
-
 export async function find() {
-  const result = await connection.query<Card>("SELECT * FROM cards");
+  const result = await connection.query<cardInterface.Card>("SELECT * FROM cards");
   return result.rows;
 }
 
 export async function findById(id: number) {
-  const result = await connection.query<Card, [number]>(
+  const result = await connection.query<cardInterface.Card, [number]>(
     "SELECT * FROM cards WHERE id=$1",
     [id]
   );
@@ -40,10 +17,10 @@ export async function findById(id: number) {
 }
 
 export async function findByTypeAndEmployeeId(
-  type: TransactionTypes,
+  type: cardInterface.TransactionTypes,
   employeeId: number
 ) {
-  const result = await connection.query<Card, [TransactionTypes, number]>(
+  const result = await connection.query<cardInterface.Card, [cardInterface.TransactionTypes, number]>(
     `SELECT * FROM cards WHERE type=$1 AND "employeeId"=$2`,
     [type, employeeId]
   );
@@ -56,7 +33,7 @@ export async function findByCardDetails(
   cardholderName: string,
   expirationDate: string
 ) {
-  const result = await connection.query<Card, [string, string, string]>(
+  const result = await connection.query<cardInterface.Card, [string, string, string]>(
     ` SELECT 
         * 
       FROM cards 
@@ -68,7 +45,7 @@ export async function findByCardDetails(
 }
 
 export async function findByCardNumber(number: string) {
-  const result = await connection.query<Card, [string]>(
+  const result = await connection.query<cardInterface.Card, [string]>(
     ` SELECT 
         * 
       FROM cards 
@@ -79,7 +56,7 @@ export async function findByCardNumber(number: string) {
   return result.rows[0];
 }
 
-export async function insert(cardData: CardInsertData) {
+export async function insert(cardData: cardInterface.CardInsertData) {
   const {
     employeeId,
     number,
@@ -116,7 +93,7 @@ export async function insert(cardData: CardInsertData) {
   return card.rows[0];
 }
 
-export async function update(id: number, cardData: CardUpdateData) {
+export async function update(id: number, cardData: cardInterface.CardUpdateData) {
   const { objectColumns: cardColumns, objectValues: cardValues } =
     mapObjectToUpdateQuery({
       object: cardData,

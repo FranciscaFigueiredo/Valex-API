@@ -1,9 +1,6 @@
-export interface Inter{
-  object: object,
-  offset: number,
-}
+import { CardValuesUpdate } from "../interfaces/cardInterface";
 
-export function mapObjectToUpdateQuery({ object, offset = 1 }: Inter) {
+export function mapObjectToUpdateQuery({ object, offset = 1 }: CardValuesUpdate) {
   const objectColumns = Object.keys(object)
     .map((key, index) => `"${key}"=$${index + offset}`)
     .join(",");

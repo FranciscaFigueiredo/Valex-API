@@ -1,5 +1,5 @@
 import NotFoundError from "../errors/NotFoundError";
-import { InfoCardInterface } from "../interfaces/cardInterface";
+import * as cardInterface from "../interfaces/cardInterface";
 import * as cardRepository from "../repositories/cardRepository";
 import * as employeeRepository from "../repositories/employeeRepository";
 import { faker } from '@faker-js/faker';
@@ -7,8 +7,9 @@ import bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import ConflictError from "../errors/ConflictError";
 import { EmployeeName } from "../interfaces/employeeInterface";
+import UnauthorizedError from "../errors/UnauthorizedError";
 
-async function postNewCard({ employeeId, type }: InfoCardInterface) {
+async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface) {
 
     const employee = await employeeRepository.findById(employeeId);
 
@@ -42,6 +43,26 @@ async function postNewCard({ employeeId, type }: InfoCardInterface) {
     });
 
     return card;
+}
+
+async function activateCard({ employeeId, number, cvc, password }: cardInterface.ActivateCardData): Promise<boolean> {
+    const card = await cardRepository.findByCardNumber(number);
+    
+    if (!card) {
+        throw new NotFoundError('')
+    }
+
+    const isAuthorized = bcrypt.compareSync(cvc, card.securityCode);
+
+    if (!isAuthorized) {
+        throw new UnauthorizedError('');
+    }    
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    await cardRepository.update(employeeId, {password: hashedPassword});
+
+    return true;
 }
 
 async function findCardByNumber(number: string): Promise<boolean> {
@@ -83,7 +104,8 @@ async function generateCardNumber(): Promise<string> {
 
 async function generateSecurityCode(): Promise<string> {
     const securityCode = faker.finance.creditCardCVV();
-
+    console.log(securityCode);
+    
     const hashedSecurityCode = bcrypt.hashSync(securityCode, 10);
 
     return hashedSecurityCode;
@@ -97,7 +119,7 @@ async function generateExpirationDate(): Promise<string> {
     return expirationDate;
 }
 
-async function verifyTypeOfEmployeeCard({ type, employeeId }: InfoCardInterface): Promise<cardRepository.Card> {
+async function verifyTypeOfEmployeeCard({ type, employeeId }: cardInterface.InfoCardInterface): Promise<cardInterface.Card> {
     const expirationDate = await cardRepository.findByTypeAndEmployeeId(type, employeeId);
     
     if (expirationDate) {
@@ -109,4 +131,5 @@ async function verifyTypeOfEmployeeCard({ type, employeeId }: InfoCardInterface)
 
 export {
     postNewCard,
+    activateCard,
 };

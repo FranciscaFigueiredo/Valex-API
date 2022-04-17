@@ -1,12 +1,5 @@
 import { connection } from "../database";
-
-export interface Recharge {
-  id: number;
-  cardId: number;
-  timestamp: Date;
-  amount: number;
-}
-export type RechargeInsertData = Omit<Recharge, "id" | "timestamp">;
+import { Recharge, RechargeInsertData } from "../interfaces/rechargeInterface";
 
 export async function findByCardId(cardId: number) {
   const result = await connection.query<Recharge, [number]>(
@@ -15,6 +8,19 @@ export async function findByCardId(cardId: number) {
   );
 
   return result.rows;
+}
+
+export async function findRechargesTotalByCardId(cardId: number) {
+  const result = await connection.query(
+    `SELECT 
+      SUM(recharges.amount) AS "rechargesTotal"
+     FROM recharges
+     WHERE recharges."cardId"=$1;
+    `,
+    [cardId]
+  );
+
+  return result.rows[0].rechargesTotal;
 }
 
 export async function insert(rechargeData: RechargeInsertData) {

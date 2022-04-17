@@ -8,9 +8,9 @@ import dayjs from 'dayjs';
 import ConflictError from "../errors/ConflictError";
 import { EmployeeName } from "../interfaces/employeeInterface";
 import UnauthorizedError from "../errors/UnauthorizedError";
-import ForbiddenError from "../errors/ForbiddenError";
 import * as paymentRepository from "../repositories/paymentRepository";
 import * as rechargeRepository from "../repositories/rechargeRepository";
+import * as cardUtils from "../utils/cardUtils";
 
 async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface) {
 
@@ -49,19 +49,13 @@ async function postNewCard({ employeeId, type }: cardInterface.InfoCardInterface
 }
 
 async function activateCard({ id, number, cvc, password }: cardInterface.ActivateCardData): Promise<boolean> {
-    const card = await cardRepository.findByCardNumber(number);
-    console.log({card});
-    
-    
-    if (!card) {
-        throw new NotFoundError('')
-    }
+    const card = await cardUtils.registeredCardCheck(id);
     
     if (card.password) {
         throw new ConflictError('Card already unlocked!')
     }
 
-    await verifyExpirationDate(card.expirationDate);
+    await cardUtils.verifyExpirationDate(card.expirationDate);
 
     const isAuthorized = bcrypt.compareSync(cvc, card.securityCode);
 
@@ -77,7 +71,13 @@ async function activateCard({ id, number, cvc, password }: cardInterface.Activat
 }
 
 async function findCardDetails(id: number) {
-    const balance = await paymentRepository.findBalanceByCardId(id)
+    await cardUtils.registeredCardCheck(id);
+
+    const paymentsTotal = await paymentRepository.findPaymentsTotalByCardId(id);
+    const rechargesTotal = await rechargeRepository.findRechargesTotalByCardId(id);
+
+    const balance = rechargesTotal - paymentsTotal;
+
     const transactions = await paymentRepository.findByCardId(id);
     const recharges = await rechargeRepository.findByCardId(id);
     
@@ -150,15 +150,6 @@ async function verifyTypeOfEmployeeCard({ type, employeeId }: cardInterface.Info
     }
 
     return expirationDate;
-}
-
-async function verifyExpirationDate(expirationDate: string) {
-    const now = dayjs().format('MM/YY');
-    const isExpired = dayjs(now) > dayjs(expirationDate);
-
-    if (isExpired) {
-        throw new ForbiddenError('Date expired!');
-    }
 }
 
 export {

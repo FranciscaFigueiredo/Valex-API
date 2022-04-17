@@ -10,17 +10,17 @@ export interface Payment {
 export type PaymentWithBusinessName = Payment & { businessName: string };
 export type PaymentInsertData = Omit<Payment, "id" | "timestamp">;
 
-export async function findBalanceByCardId(cardId: number) {
+export async function findPaymentsTotalByCardId(cardId: number) {
   const result = await connection.query(
     `SELECT 
-      SUM(amount) AS balance
+      SUM(payments.amount) AS "paymentsTotal"
      FROM payments
-     WHERE "cardId"=$1;
+     WHERE payments."cardId"=$1;
     `,
     [cardId]
   );
 
-  return result.rows[0].balance;
+  return result.rows[0].paymentsTotal;
 }
 
 export async function findByCardId(cardId: number) {

@@ -1,14 +1,5 @@
 import { connection } from "../database";
-
-export interface Payment {
-  id: number;
-  cardId: number;
-  businessId: number;
-  timestamp: Date;
-  amount: number;
-}
-export type PaymentWithBusinessName = Payment & { businessName: string };
-export type PaymentInsertData = Omit<Payment, "id" | "timestamp">;
+import * as paymentInterface from "../interfaces/paymentInterface";
 
 export async function findPaymentsTotalByCardId(cardId: number) {
   const result = await connection.query(
@@ -24,7 +15,7 @@ export async function findPaymentsTotalByCardId(cardId: number) {
 }
 
 export async function findByCardId(cardId: number) {
-  const result = await connection.query<PaymentWithBusinessName, [number]>(
+  const result = await connection.query<paymentInterface.PaymentWithBusinessName, [number]>(
     `SELECT 
       payments.*,
       businesses.name as "businessName"
@@ -38,11 +29,13 @@ export async function findByCardId(cardId: number) {
   return result.rows;
 }
 
-export async function insert(paymentData: PaymentInsertData) {
+export async function insert(paymentData: paymentInterface.PaymentInsertData) {
   const { cardId, businessId, amount } = paymentData;
 
-  connection.query<any, [number, number, number]>(
-    `INSERT INTO payments ("cardId", "businessId", amount) VALUES ($1, $2, $3)`,
+  const payment = await connection.query<any, [number, number, number]>(
+    `INSERT INTO payments ("cardId", "businessId", amount) VALUES ($1, $2, $3) RETURNING *`,
     [cardId, businessId, amount]
   );
+
+  return payment.rows;
 }

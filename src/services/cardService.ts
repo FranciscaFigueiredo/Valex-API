@@ -89,7 +89,7 @@ async function findCardDetails(id: number) {
     };
 }
 
-async function blockCard(id: number, password: string) {
+async function blockCard(id: number, password: string): Promise<boolean> {
     const card = await cardUtils.registeredCardCheck(id);    
 
     await cardUtils.verifyCardPassword(password, card);
@@ -101,6 +101,24 @@ async function blockCard(id: number, password: string) {
     await cardUtils.verifyExpirationDate(card.expirationDate);
 
     await cardRepository.update(id, {isBlocked: true});
+
+    return true;
+}
+
+async function unlockCard(id: number, password: string): Promise<boolean> {
+    const card = await cardUtils.registeredCardCheck(id);    
+
+    await cardUtils.verifyCardPassword(password, card);
+    
+    if (!card.isBlocked) {
+        throw new ForbiddenError('Card already unlocked!');
+    }
+
+    await cardUtils.verifyExpirationDate(card.expirationDate);
+
+    await cardRepository.update(id, {isBlocked: false});
+
+    return true;
 }
 
 async function findCardByNumber(number: string): Promise<boolean> {
@@ -172,4 +190,5 @@ export {
     activateCard,
     findCardDetails,
     blockCard,
+    unlockCard,
 };

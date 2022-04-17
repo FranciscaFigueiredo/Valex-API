@@ -13,7 +13,7 @@ async function postCard(req: Request, res: Response) {
     return res.send(card);
 }
 
-async function unlockCard(req: Request, res: Response) {
+async function activateCard(req: Request, res: Response) {
     const {
         cvc,
         password,
@@ -46,9 +46,22 @@ async function blockCard(req: Request, res: Response) {
     return res.sendStatus(200);
 }
 
+async function unlockCard(req: Request, res: Response) {
+    const {
+        password,
+    } = req.body;
+
+    const { id } = req.params;
+
+    await cardService.unlockCard(Number(id), password);
+
+    return res.sendStatus(200);
+}
+
 export {
     postCard,
-    unlockCard,
+    activateCard,
     getCardData,
     blockCard,
+    unlockCard,
 };

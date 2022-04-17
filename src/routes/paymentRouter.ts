@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as rechargeController from "../controllers/rechargeController";
+import * as paymentController from "../controllers/paymentController";
 import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware";
 import { amountSchema } from "../schemas/rechargeSchema";
 
 const router = Router();
 
-router.post('/cards/:id/recharge', validateSchemaMiddleware(amountSchema), rechargeController.postRecharge);
+router.post('/cards/:id/payment', validateSchemaMiddleware(amountSchema), paymentController.postPayment);
 
 export default router;

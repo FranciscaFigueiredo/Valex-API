@@ -1,11 +1,5 @@
 import { connection } from "../database";
-import { TransactionTypes } from "../interfaces/cardInterface";
-
-export interface Business {
-  id: number;
-  name: string;
-  type: TransactionTypes;
-}
+import { Business } from "../interfaces/Business";
 
 export async function findById(id: number) {
   const result = await connection.query<Business, [number]>(

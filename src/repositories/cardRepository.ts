@@ -1,14 +1,14 @@
 import { connection } from "../database";
-import * as cardInterface from "../interfaces/cardInterface";
+import * as Card from "../interfaces/Card";
 import { mapObjectToUpdateQuery } from "../utils/sqlUtils";
 
 export async function find() {
-  const result = await connection.query<cardInterface.Card>("SELECT * FROM cards");
+  const result = await connection.query<Card.Card>("SELECT * FROM cards");
   return result.rows;
 }
 
 export async function findById(id: number) {
-  const result = await connection.query<cardInterface.Card, [number]>(
+  const result = await connection.query<Card.Card, [number]>(
     "SELECT * FROM cards WHERE id=$1",
     [id]
   );
@@ -17,10 +17,10 @@ export async function findById(id: number) {
 }
 
 export async function findByTypeAndEmployeeId(
-  type: cardInterface.TransactionTypes,
+  type: Card.TransactionTypes,
   employeeId: number
 ) {
-  const result = await connection.query<cardInterface.Card, [cardInterface.TransactionTypes, number]>(
+  const result = await connection.query<Card.Card, [Card.TransactionTypes, number]>(
     `SELECT * FROM cards WHERE type=$1 AND "employeeId"=$2`,
     [type, employeeId]
   );
@@ -33,7 +33,7 @@ export async function findByCardDetails(
   cardholderName: string,
   expirationDate: string
 ) {
-  const result = await connection.query<cardInterface.Card, [string, string, string]>(
+  const result = await connection.query<Card.Card, [string, string, string]>(
     ` SELECT 
         * 
       FROM cards 
@@ -45,7 +45,7 @@ export async function findByCardDetails(
 }
 
 export async function findByCardNumber(number: string) {
-  const result = await connection.query<cardInterface.Card, [string]>(
+  const result = await connection.query<Card.Card, [string]>(
     ` SELECT 
         * 
       FROM cards 
@@ -56,7 +56,7 @@ export async function findByCardNumber(number: string) {
   return result.rows[0];
 }
 
-export async function insert(cardData: cardInterface.CardInsertData) {
+export async function insert(cardData: Card.CardInsertData) {
   const {
     employeeId,
     number,
@@ -93,7 +93,7 @@ export async function insert(cardData: cardInterface.CardInsertData) {
   return card.rows[0];
 }
 
-export async function update(id: number, cardData: cardInterface.CardUpdateData) {
+export async function update(id: number, cardData: Card.CardUpdateData) {
   const { objectColumns: cardColumns, objectValues: cardValues } =
     mapObjectToUpdateQuery({
       object: cardData,

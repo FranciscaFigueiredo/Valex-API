@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PaymentBodyData } from "../interfaces/paymentInterface";
+import { PaymentBodyData } from "../interfaces/Payment";
 import * as paymentService from "../services/paymentService";
 
 async function postPayment(req: Request, res: Response) {

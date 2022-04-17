@@ -1,5 +1,5 @@
 import { connection } from "../database";
-import * as paymentInterface from "../interfaces/paymentInterface";
+import * as paymentInterface from "../interfaces/Payment";
 
 export async function findPaymentsTotalByCardId(cardId: number) {
   const result = await connection.query(

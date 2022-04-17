@@ -7,6 +7,7 @@
 
 ## How to install and run on terminal
 
+
 #### It is necessary to install node: https://nodejs.org/en/download/
 
 <br/>

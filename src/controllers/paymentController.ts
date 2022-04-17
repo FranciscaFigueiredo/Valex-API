@@ -9,7 +9,7 @@ async function postPayment(req: Request, res: Response) {
         amount,
     }: PaymentBodyData = req.body;
 
-    const { id } = req.params;
+    const { id } = req.params;    
 
     const payment = await paymentService.newPayment(
         password,

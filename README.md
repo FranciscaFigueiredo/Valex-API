@@ -60,6 +60,11 @@ or
 
     In this route, companies with a valid API key can create cards for their employees. For a card to be created we need the employee identifier and the card type.
 
+    Headers:
+    ```
+    xApiKey: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
+    ```
+
   Body:
     
     ```
@@ -130,6 +135,41 @@ or
         "password": "1234"
     }
     ```
+
+- POST /cards/:id/recharge
+
+  In this route, companies with a valid API key can reload their employees' cards. For a card to be recharged, we need its identifier.
+  
+  Headers:
+    ```
+    xApiKey: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
+    ```
+
+  Body:
+    ```
+    {
+        "amount": "20000"
+    }
+    ```
+
+- POST /cards/:id/payment
+
+  In this route, companies with a valid API key can reload their employees' cards. For a card to be recharged, we need its identifier.
+
+  Headers:
+    ```
+    xApiKey: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
+    ```
+  
+  Body:
+    ```
+    {
+        "password": "1234",
+        "businessId": 1
+        "amount": "20000"
+    }
+    ```
+
 
 ## **Technologies**
 

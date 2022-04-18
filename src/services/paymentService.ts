@@ -1,9 +1,9 @@
 import ForbiddenError from '../errors/ForbiddenError';
 import NotFoundError from '../errors/NotFoundError';
-import { PaymentInsertData } from "../interfaces/Payment";
+import { PaymentInsertData } from '../interfaces/Payment';
 import * as businessRepository from '../repositories/businessRepository';
 import { insert } from '../repositories/paymentRepository';
-import * as cardUtils from "../utils/cardUtils";
+import * as cardUtils from '../utils/cardUtils';
 
 async function newPayment(password: string, paymentData: PaymentInsertData) {
     const {
@@ -17,7 +17,7 @@ async function newPayment(password: string, paymentData: PaymentInsertData) {
     if (card.isBlocked) {
         throw new ForbiddenError('Blocked card');
     }
-    
+
     await cardUtils.verifyExpirationDate(card.expirationDate);
 
     await cardUtils.verifyCardPassword(password, card);
@@ -29,11 +29,11 @@ async function newPayment(password: string, paymentData: PaymentInsertData) {
     }
 
     if (business.type !== card.type) {
-        throw new ForbiddenError('Type of business not covered by the card!')
+        throw new ForbiddenError('Type of business not covered by the card!');
     }
 
     const balance = await cardUtils.findCardBalance(cardId);
-    
+
     if (balance < amount) {
         throw new ForbiddenError('Insufficient funds');
     }

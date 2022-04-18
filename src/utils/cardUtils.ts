@@ -1,12 +1,12 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import bcrypt from 'bcrypt';
-import ForbiddenError from "../errors/ForbiddenError";
-import NotFoundError from "../errors/NotFoundError";
-import UnauthorizedError from "../errors/UnauthorizedError";
-import { Card } from "../interfaces/Card";
-import * as cardRepository from "../repositories/cardRepository";
-import * as paymentRepository from "../repositories/paymentRepository";
-import * as rechargeRepository from "../repositories/rechargeRepository";
+import ForbiddenError from '../errors/ForbiddenError';
+import NotFoundError from '../errors/NotFoundError';
+import UnauthorizedError from '../errors/UnauthorizedError';
+import { Card } from '../interfaces/Card';
+import * as cardRepository from '../repositories/cardRepository';
+import * as paymentRepository from '../repositories/paymentRepository';
+import * as rechargeRepository from '../repositories/rechargeRepository';
 
 async function verifyExpirationDate(expirationDate: string): Promise <void> {
     const now = dayjs().format('MM/YY');
@@ -19,7 +19,7 @@ async function verifyExpirationDate(expirationDate: string): Promise <void> {
 
 async function registeredCardCheck(id: number): Promise <Card> {
     const card = await cardRepository.findById(id);
-    
+
     if (!card) {
         throw new NotFoundError('Card not found!');
     }
@@ -36,11 +36,11 @@ async function findCardBalance(id: number) {
     return balance;
 }
 
-async function verifyCardPassword(password: string, card: Card) {    
+async function verifyCardPassword(password: string, card: Card) {
     const isAuthorized = bcrypt.compareSync(password, card.password);
 
     if (!isAuthorized) {
-        throw new UnauthorizedError('Invalid password, please try again')
+        throw new UnauthorizedError('Invalid password, please try again');
     }
 }
 

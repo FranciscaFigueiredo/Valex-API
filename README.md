@@ -1,5 +1,5 @@
 # VALEX 💳
-<h2 align="start" style='color:#ED8F0C; font-size:25px;' width="20%">
+<h2 align="start" style='color:#ED8F0C; font-size:25px; width="20%;"'>
   Benefit Card API 💸
 </h2>
   
@@ -62,7 +62,7 @@ or
 
     Headers:
     ```
-    xApiKey: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
+    x-api-key: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
     ```
 
   Body:
@@ -142,7 +142,7 @@ or
   
   Headers:
     ```
-    xApiKey: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
+    x-api-key: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
     ```
 
   Body:
@@ -158,7 +158,7 @@ or
 
   Headers:
     ```
-    xApiKey: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
+    x-api-key: zadKLNx.DzvOVjQH01TumGl2urPjPQSxUbf67vs0
     ```
   
   Body:

@@ -5,4 +5,4 @@ export interface Recharge {
     amount: number;
 }
 
-export type RechargeInsertData = Omit<Recharge, "id" | "timestamp">;
+export type RechargeInsertData = Omit<Recharge, 'id' | 'timestamp'>;

@@ -1,11 +1,11 @@
-import { connection } from "../database";
-import { Employee } from "../interfaces/Employee";
+import { connection } from '../database';
+import { Employee } from '../interfaces/Employee';
 
 export async function findById(id: number) {
-  const result = await connection.query<Employee, [number]>(
-    "SELECT * FROM employees WHERE id=$1",
-    [id]
-  );
+    const result = await connection.query<Employee, [number]>(
+        'SELECT * FROM employees WHERE id=$1',
+        [id],
+    );
 
-  return result.rows[0];
+    return result.rows[0];
 }

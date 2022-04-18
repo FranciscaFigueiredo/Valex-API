@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { PaymentBodyData } from "../interfaces/Payment";
-import * as paymentService from "../services/paymentService";
+import { Request, Response } from 'express';
+import { PaymentBodyData } from '../interfaces/Payment';
+import * as paymentService from '../services/paymentService';
 
 async function postPayment(req: Request, res: Response) {
     const {
@@ -9,7 +9,7 @@ async function postPayment(req: Request, res: Response) {
         amount,
     }: PaymentBodyData = req.body;
 
-    const { id } = req.params;    
+    const { id } = req.params;
 
     const payment = await paymentService.newPayment(
         password,
@@ -17,8 +17,8 @@ async function postPayment(req: Request, res: Response) {
             cardId: Number(id),
             businessId,
             amount,
-        }
-    )
+        },
+    );
 
     return res.send(payment);
 }

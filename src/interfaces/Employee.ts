@@ -6,4 +6,4 @@ export interface Employee {
     companyId: number;
 }
 
-export type EmployeeName = Omit<Employee, "id, cpf, email, companyId">;
+export type EmployeeName = Omit<Employee, 'id, cpf, email, companyId'>;

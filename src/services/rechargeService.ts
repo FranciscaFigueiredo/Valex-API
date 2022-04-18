@@ -1,7 +1,7 @@
-import NotFoundError from "../errors/NotFoundError";
-import * as cardRepository from "../repositories/cardRepository";
-import * as rechargeRepository from "../repositories/rechargeRepository";
-import * as cardUtils from "../utils/cardUtils";
+import NotFoundError from '../errors/NotFoundError';
+import * as cardRepository from '../repositories/cardRepository';
+import * as rechargeRepository from '../repositories/rechargeRepository';
+import * as cardUtils from '../utils/cardUtils';
 
 async function recharge(id: number, amount: number) {
     const card = await cardRepository.findById(id);
@@ -12,11 +12,11 @@ async function recharge(id: number, amount: number) {
 
     await cardUtils.verifyExpirationDate(card.expirationDate);
 
-    const recharge = await rechargeRepository.insert({ cardId: id, amount});
+    const rechargeDone = await rechargeRepository.insert({ cardId: id, amount });
 
-    return recharge;
+    return rechargeDone;
 }
 
 export {
-   recharge,
+    recharge,
 };

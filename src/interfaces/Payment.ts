@@ -14,4 +14,4 @@ export interface PaymentBodyData {
 
 export type PaymentWithBusinessName = Payment & { businessName: string };
 
-export type PaymentInsertData = Omit<Payment, "id" | "timestamp">;
+export type PaymentInsertData = Omit<Payment, 'id' | 'timestamp'>

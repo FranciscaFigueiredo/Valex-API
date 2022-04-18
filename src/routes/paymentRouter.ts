@@ -1,7 +1,7 @@
-import { Router } from "express";
-import * as paymentController from "../controllers/paymentController";
-import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware";
-import { paymentSchema } from "../schemas/paymentSchema";
+import { Router } from 'express';
+import * as paymentController from '../controllers/paymentController';
+import { validateSchemaMiddleware } from '../middlewares/validateSchemaMiddleware';
+import { paymentSchema } from '../schemas/paymentSchema';
 
 const router = Router();
 
